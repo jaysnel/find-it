@@ -9,6 +9,11 @@
 </template>
 
 <style>
+body {
+  margin: 0;
+  padding: 0;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -18,7 +23,9 @@
 }
 
 #nav {
+  background: #c0c0c0;
   padding: 30px;
+  margin: 0;
 }
 
 #nav a {

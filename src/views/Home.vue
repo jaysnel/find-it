@@ -1,8 +1,10 @@
 <template>
   <div class="home">
-    <h1>Find-It</h1>
-    <input type="text" v-model="imgSearch" placeholder="Search Image...">
-    <button @click="findImage">Search</button>
+    <div class="find-it-top-contain">
+      <h1>Find-It</h1>
+      <input type="text" v-model="imgSearch" placeholder="Search Image...">
+      <button @click="findImage">Search</button>
+    </div>
     
     <div class="img-body-content">
       <div v-for="item in imgHits" :key="item.id" class="individual-image">
@@ -11,7 +13,7 @@
           <p>Views: {{ item.views }}</p>
           <p>Likes: {{ item.likes }}</p>
           <p>Total Downloads: {{ item.downloads }}</p>
-          <a :href="item.previewURL" target="_blank">Download</a>
+          <a :href="item.pageURL" target="_blank">Download</a>
         </div>
       </div>
     </div>
@@ -52,6 +54,16 @@ export default {
 </script>
 
 <style scoped>
+.find-it-top-contain {
+  background: url("../assets/images/black-camera.jpg");
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  height: 25vh;
+  margin: 0;
+  padding: 0;
+}
+
 .individual-image img {
     max-width: 100%;
     width: 300px;
