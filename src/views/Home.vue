@@ -31,13 +31,14 @@ export default {
       apiKey: process.env.VUE_APP_API_KEY,
       imgSearch: null, //user search
       imgHits: null, //array of image search results
+      pageNumber: 1,
       hitsPerPage: 50
     }
   },
   methods: {
     findImage() {
       let page = this;
-      let url = `${page.urlBase}?key=${page.apiKey}&q=${encodeURIComponent(page.imgSearch)}&image_type=photo&pretty=true&per_page=${page.hitsPerPage}`;
+      let url = `${page.urlBase}?key=${page.apiKey}&q=${encodeURIComponent(page.imgSearch)}&image_type=photo&pretty=true&per_page=${page.hitsPerPage}&page=${page.pageNumber}`;
       console.log(url)
 
       axios.get(url)
