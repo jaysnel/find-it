@@ -2,8 +2,10 @@
   <div class="home">
     <div class="find-it-top-contain">
       <h1>Find-It</h1>
-      <input type="text" v-model="imgSearch" placeholder="Search Image...">
-      <button @click="findImage">Search</button>
+      <div>
+        <b-form-input v-model="imgSearch" placeholder="Search Image..."></b-form-input>
+        <b-button variant="success" @click="findImage">Search</b-button>
+      </div>
     </div>
     
     <div class="img-body-content">
@@ -17,6 +19,17 @@
         </div>
       </div>
     </div>
+    <b-pagination
+      v-model="currentPage"
+      v-if="userLoadedImages"
+      :total-rows="5"
+      :per-page="1"
+      @input="findImage()"
+      first-text="First"
+      prev-text="Prev"
+      next-text="Next"
+      last-text="Last"
+    ></b-pagination>
   </div>
 </template>
 
@@ -29,24 +42,28 @@ export default {
     return {
       urlBase: "https://pixabay.com/api/",
       apiKey: process.env.VUE_APP_API_KEY,
+      userLoadedImages: false,
       imgSearch: null, //user search
       imgHits: null, //array of image search results
-      pageNumber: 1,
-      hitsPerPage: 50
+      currentPage: 1,
+      hitsPerPage: 3
     }
   },
   methods: {
     findImage() {
       let page = this;
-      let url = `${page.urlBase}?key=${page.apiKey}&q=${encodeURIComponent(page.imgSearch)}&image_type=photo&pretty=true&per_page=${page.hitsPerPage}&page=${page.pageNumber}`;
-      console.log(url)
+      let url = `${page.urlBase}?key=${page.apiKey}&q=${encodeURIComponent(page.imgSearch)}&image_type=photo&pretty=true&per_page=${page.hitsPerPage}&page=${page.currentPage}`;
+      
+      page.userLoadedImages = false;
 
       axios.get(url)
       .then((res) => {
         this.imgHits = res.data.hits;
+        page.userLoadedImages = true;
         console.log(res.data);
       })
       .catch((err) => {
+        page.userLoadedImages = false;
         console.log(err);
       })
     }
@@ -65,6 +82,13 @@ export default {
   padding: 0;
 }
 
+.find-it-top-contain div{
+    display: grid;
+    grid-template-columns: repeat(1,1fr);
+    width: 50%;
+    margin: auto;
+  }
+
 .individual-image img {
     max-width: 100%;
     width: 300px;
@@ -72,6 +96,10 @@ export default {
 
 
 @media(min-width: 768px) {
+  .find-it-top-contain div{
+    width: 25%;
+  }
+
   .img-body-content {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
