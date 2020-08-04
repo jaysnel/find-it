@@ -5,8 +5,20 @@
       <router-link to="/about">About</router-link>
     </div>
     <router-view/>
+    <BackToTop/>
   </div>
 </template>
+
+<script>
+import BackToTop from './views/BackToTop'
+
+export default {
+  components: {
+    BackToTop
+  }
+}
+
+</script>
 
 <style>
 body {

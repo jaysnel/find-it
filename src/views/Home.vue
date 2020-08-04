@@ -3,7 +3,7 @@
     <div class="find-it-top-contain">
       <h1>Find-It</h1>
       <div>
-        <b-form-input v-model="imgSearch" placeholder="Search Image..."></b-form-input>
+        <b-form-input v-model="imgSearch" placeholder="Search Image..." @keyup.enter="findImage"></b-form-input>
         <b-button variant="success" @click="findImage">Search</b-button>
       </div>
     </div>
@@ -12,16 +12,19 @@
       <div v-for="item in imgHits" :key="item.id" class="individual-image">
         <div>
           <img :src="item.largeImageURL" alt="">
-          <p>Views: {{ item.views }}</p>
-          <p>Likes: {{ item.likes }}</p>
-          <p>Total Downloads: {{ item.downloads }}</p>
-          <a :href="item.pageURL" target="_blank">Download</a>
+          <div class="image-info">
+            <p><b-icon icon="eye" aria-hidden="true"></b-icon> {{ item.views }}</p>
+            <p><b-icon icon="hand-thumbs-up" aria-hidden="true"></b-icon> {{ item.likes }}</p>
+            <p><b-icon icon="cloud-arrow-down-fill" aria-hidden="true"></b-icon> {{ item.downloads }}</p>
+            <a :href="item.pageURL" target="_blank"><b-button variant="outline-primary" size="md">Download</b-button></a>
+          </div>
         </div>
       </div>
     </div>
-    <b-pagination
+    <div class="pagination-section" v-if="userLoadedImages">
+      <div class="section1">
+        <b-pagination
       v-model="currentPage"
-      v-if="userLoadedImages"
       :total-rows="totalRows"
       :per-page="1"
       @input="findImage()"
@@ -30,6 +33,11 @@
       next-text="Next"
       last-text="Last"
     ></b-pagination>
+      </div>
+      <div class="section2">
+        <b-form-select v-model="hitsPerPage" :options="options" @change="findImage"></b-form-select>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -46,8 +54,15 @@ export default {
       imgSearch: null, //user search
       imgHits: null, //array of image search results
       currentPage: 1,
+      totalRows: null,
+      ascd: true,
       hitsPerPage: 10,
-      totalRows: null
+      options: [
+          { value: 5, text: '5' },
+          { value: 10, text: '10' },
+          { value: 50, text: '50' },
+          { value: 100, text: '100' }
+        ]
     }
   },
   methods: {
@@ -59,6 +74,7 @@ export default {
 
       axios.get(url)
       .then((res) => {
+        window.scrollTo(0,0);
         this.imgHits = res.data.hits;
         page.userLoadedImages = true;
         page.totalRows = Math.floor(res.data.totalHits / page.hitsPerPage);
@@ -90,13 +106,36 @@ export default {
     margin: auto;
   }
 
+.individual-image {
+  box-shadow:0 1px 20px rgba(0, 0, 0, 0.3);
+  margin: 10px;
+  background: transparent;
+  margin-bottom: 10px;
+}
+
 .individual-image img {
     max-width: 100%;
     max-height: 100%;
     
     height: 300px;
+    padding: 10px;
   }
 
+  .image-info {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    align-items: center;
+
+    margin: 5px;
+  }
+
+  .image-info button {
+    margin-top: -15px;
+  }
+
+  .pagination {
+    justify-content: center;
+  }
 
 @media(min-width: 768px) {
   .find-it-top-contain div{
@@ -113,7 +152,15 @@ export default {
 
   .individual-image {
     max-width: 100%;
-    border: 2px solid #000;
   }
+}
+
+.pagination-section {
+  display: flex;
+  justify-content: center;
+}
+
+.pagination-section div {
+  margin: 0 5px;
 }
 </style>
