@@ -22,7 +22,7 @@
     <b-pagination
       v-model="currentPage"
       v-if="userLoadedImages"
-      :total-rows="5"
+      :total-rows="totalRows"
       :per-page="1"
       @input="findImage()"
       first-text="First"
@@ -46,7 +46,8 @@ export default {
       imgSearch: null, //user search
       imgHits: null, //array of image search results
       currentPage: 1,
-      hitsPerPage: 3
+      hitsPerPage: 10,
+      totalRows: null
     }
   },
   methods: {
@@ -60,7 +61,7 @@ export default {
       .then((res) => {
         this.imgHits = res.data.hits;
         page.userLoadedImages = true;
-        console.log(res.data);
+        page.totalRows = Math.floor(res.data.totalHits / page.hitsPerPage);
       })
       .catch((err) => {
         page.userLoadedImages = false;
@@ -91,7 +92,9 @@ export default {
 
 .individual-image img {
     max-width: 100%;
-    width: 300px;
+    max-height: 100%;
+    
+    height: 300px;
   }
 
 
@@ -110,6 +113,7 @@ export default {
 
   .individual-image {
     max-width: 100%;
+    border: 2px solid #000;
   }
 }
 </style>
